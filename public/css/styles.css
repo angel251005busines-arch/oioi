@@ -475,7 +475,7 @@ h1 {
   gap: 12px;
 }
 
-.choice { position: relative; display: block; cursor: pointer; }
+.choice { position: relative; display: flex; cursor: pointer; }
 .choice input {
   position: absolute;
   inset: 0;
@@ -491,6 +491,7 @@ h1 {
   flex-direction: column;
   gap: 4px;
   height: 100%;
+  flex: 1;
   padding: 14px 16px 14px 44px;
   border: 2px solid var(--border);
   border-radius: var(--radius);

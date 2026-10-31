@@ -1,0 +1,15 @@
+node_modules/
+.DS_Store
+*.log
+
+# Данные приёмной (персональные данные не коммитим)
+data/applications.jsonl
+data/uploads/
+data/sequence.json
+
+# Копия общего модуля для статического хостинга (создаётся `npm run build`)
+public/shared/
+
+# Временные каталоги тестов
+tmp/
+coverage/

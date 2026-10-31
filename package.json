@@ -1,0 +1,16 @@
+{
+  "name": "shkola800-priyomnaya",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Интернет-приёмная АНОО «Школа 800»: форма обращений, записи на встречу и вопросов о поступлении",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server/app.js",
+    "dev": "node --watch server/app.js",
+    "build": "node scripts/build.js",
+    "test": "node --test"
+  }
+}

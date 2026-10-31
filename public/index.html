@@ -6,9 +6,9 @@
   <title>Интернет-приёмная — АНОО «Школа 800»</title>
   <meta name="description" content="Электронная форма обращений, записи на очную встречу и вопросов о поступлении для родителей и законных представителей учеников АНОО «Школа 800».">
   <meta name="theme-color" content="#008587">
-  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="/css/styles.css">
-  <script type="module" src="/js/app.js"></script>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/styles.css">
+  <script type="module" src="js/app.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Перейти к форме</a>
@@ -16,7 +16,7 @@
 <header class="site-header">
   <div class="container header__inner">
     <a class="brand" href="https://shkola800.ru/" aria-label="Школа 800 — на главную страницу сайта">
-      <img class="brand__mark" src="/assets/logo.svg" alt="" width="56" height="56">
+      <img class="brand__mark" src="assets/logo.svg" alt="" width="56" height="56">
       <span class="brand__text">
         <span class="brand__name">Школа 800</span>
         <span class="brand__caption">Интернет-приёмная</span>
@@ -88,6 +88,11 @@
       </noscript>
 
       <div class="notice notice--success" id="sent-banner" hidden role="status"></div>
+      <div class="notice notice--warning" id="demo-banner" hidden role="status">
+        <strong>Демонстрационная версия.</strong>
+        Сервер приёма обращений не подключён, поэтому отправка не сохранится.
+        Полная версия формы работает на сервере школы.
+      </div>
       <div class="notice notice--error" id="form-error" hidden role="alert"></div>
       <div class="error-summary" id="error-summary" tabindex="-1" hidden role="alert" aria-labelledby="error-summary-title">
         <h3 class="error-summary__title" id="error-summary-title">Проверьте заполнение формы</h3>

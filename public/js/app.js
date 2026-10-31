@@ -2,7 +2,9 @@
  * Логика формы «Интернет-приёмная Школа 800».
  *
  * Вся валидация выполняется тем же модулем, что и на сервере
- * (/shared/validation.mjs), поэтому клиент и сервер не расходятся в правилах.
+ * (shared/validation.mjs), поэтому клиент и сервер не расходятся в правилах.
+ * Пути относительные: страница работает и в корне домена, и в подкаталоге
+ * (например, на GitHub Pages по адресу /oioi/).
  */
 import {
   validateApplication,
@@ -11,7 +13,7 @@ import {
   toIsoDate,
   FILES_LIMIT,
   LIMITS,
-} from '/shared/validation.mjs';
+} from '../shared/validation.mjs';
 
 const STORAGE = {
   draft: 'sh800:draft',
@@ -22,6 +24,7 @@ const STORAGE = {
 const form = document.getElementById('appeal-form');
 const successPanel = document.getElementById('success-panel');
 const sentBanner = document.getElementById('sent-banner');
+const demoBanner = document.getElementById('demo-banner');
 const formError = document.getElementById('form-error');
 const errorSummary = document.getElementById('error-summary');
 const errorSummaryList = document.getElementById('error-summary-list');
@@ -44,6 +47,23 @@ const TYPE_SUBMIT_LABEL = {
 /** Выбранные файлы: input[type=file] нельзя редактировать, поэтому держим свой массив. */
 let selectedFiles = [];
 let isSubmitting = false;
+/** Доступен ли сервер приёма обращений (на статическом хостинге — нет). */
+let apiAvailable = true;
+
+const DEMO_MESSAGE = 'Это демонстрационная версия формы: сервер приёма обращений не подключён, '
+  + 'поэтому заявка не сохранится. Отправьте обращение через полную версию на сайте школы '
+  + 'или позвоните в приёмную корпуса.';
+
+/** Проверяет, отвечает ли API; на GitHub Pages его нет, и форма переходит в демо-режим. */
+async function checkApi() {
+  try {
+    const response = await fetch('api/health', { headers: { Accept: 'application/json' } });
+    apiAvailable = response.ok;
+  } catch {
+    apiAvailable = false;
+  }
+  if (!apiAvailable) demoBanner.hidden = false;
+}
 
 /* ------------------------------------------------------------------ */
 /* Оформление: тема и размер шрифта                                    */
@@ -411,9 +431,16 @@ async function handleSubmit(event) {
     return;
   }
 
+  if (!apiAvailable) {
+    formError.textContent = DEMO_MESSAGE;
+    formError.hidden = false;
+    formError.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    return;
+  }
+
   setLoading(true);
   try {
-    const response = await fetch('/api/applications', {
+    const response = await fetch('api/applications', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       body: JSON.stringify(payload),
@@ -426,6 +453,15 @@ async function handleSubmit(event) {
     }
     if (response.status === 422 && data.errors) {
       showErrors(data.errors);
+      return;
+    }
+    if (response.status === 404 || response.status === 405) {
+      // Статический хостинг без API: сообщаем честно, а не «ошибка соединения».
+      apiAvailable = false;
+      demoBanner.hidden = false;
+      formError.textContent = DEMO_MESSAGE;
+      formError.hidden = false;
+      formError.scrollIntoView({ block: 'center', behavior: 'smooth' });
       return;
     }
     formError.textContent = data.message
@@ -565,6 +601,7 @@ function initSentBanner() {
 
 function init() {
   initAppearance();
+  checkApi();
   initTypeSwitcher();
   initPhoneMask();
   initMessageCounter();

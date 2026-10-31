@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Интернет-приёмная — АНОО «Школа 800»</title>
+  <meta name="description" content="Электронная форма обращений, записи на очную встречу и вопросов о поступлении для родителей и законных представителей учеников АНОО «Школа 800».">
+  <meta name="theme-color" content="#008587">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/styles.css">
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Перейти к форме</a>
+
+<header class="site-header">
+  <div class="container header__inner">
+    <a class="brand" href="https://shkola800.ru/" aria-label="Школа 800 — на главную страницу сайта">
+      <img class="brand__mark" src="assets/logo.svg" alt="" width="56" height="56">
+      <span class="brand__text">
+        <span class="brand__name">Школа 800</span>
+        <span class="brand__caption">Интернет-приёмная</span>
+      </span>
+    </a>
+
+    <nav class="header__nav" aria-label="Основная навигация">
+      <a href="https://shkola800.ru/o-shkole/">О школе</a>
+      <a href="https://shkola800.ru/postupayuschim/">Поступающим</a>
+      <a href="https://shkola800.ru/kontakty/">Контакты</a>
+    </nav>
+
+    <div class="a11y-bar" role="group" aria-label="Настройки отображения">
+      <span class="a11y-bar__label" id="a11y-label">Размер шрифта</span>
+      <div class="a11y-bar__group" role="group" aria-labelledby="a11y-label">
+        <button type="button" class="a11y-btn" data-font="decrease" aria-label="Уменьшить размер шрифта">A−</button>
+        <button type="button" class="a11y-btn" data-font="reset" aria-label="Стандартный размер шрифта">A</button>
+        <button type="button" class="a11y-btn" data-font="increase" aria-label="Увеличить размер шрифта">A+</button>
+      </div>
+      <button type="button" class="a11y-btn a11y-btn--theme" data-theme-toggle aria-pressed="false">
+        <span class="a11y-btn__icon" aria-hidden="true">◐</span>
+        <span data-theme-label>Тёмная тема</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="container main">
+  <nav class="breadcrumbs" aria-label="Навигационная цепочка">
+    <a href="https://shkola800.ru/">Главная</a>
+    <span aria-hidden="true">/</span>
+    <span aria-current="page">Интернет-приёмная</span>
+  </nav>
+
+  <section class="hero" aria-labelledby="page-title">
+    <div class="hero__content">
+      <p class="eyebrow">Обратная связь</p>
+      <h1 id="page-title">Интернет-приёмная <span class="hero__accent">Школы&nbsp;800</span></h1>
+      <p class="lead">
+        Оставьте обращение, запишитесь на очную встречу со специалистом или задайте вопрос
+        о поступлении. Форма доступна родителям и законным представителям учеников всех трёх корпусов.
+      </p>
+      <ul class="hero__facts">
+        <li><strong>3</strong> корпуса в Нижнем Новгороде</li>
+        <li><strong>до 30 дней</strong> — срок рассмотрения обращения</li>
+        <li><strong>до 3 рабочих дней</strong> — ответ по записи на встречу</li>
+      </ul>
+    </div>
+    <aside class="hero__aside" aria-label="Контактная информация приёмной">
+      <h2 class="hero__aside-title">Приёмная работает</h2>
+      <p class="hero__hours">Пн–Пт, 08:00–17:00</p>
+      <p class="hero__note">По общим вопросам:</p>
+      <a class="hero__link" href="mailto:anoo_shkola800_nn@mail.52gov.ru">anoo_shkola800_nn@mail.52gov.ru</a>
+      <p class="hero__note">Приём в 1 класс:</p>
+      <a class="hero__link" href="mailto:priem@shkola800.ru">priem@shkola800.ru</a>
+    </aside>
+  </section>
+
+  <div class="layout">
+    <section class="card form-card" aria-labelledby="form-title">
+      <h2 class="card__title" id="form-title">Форма обращения</h2>
+      <p class="card__subtitle">Поля, отмеченные <span class="req">*</span>, обязательны для заполнения.</p>
+
+      <noscript>
+        <p class="notice notice--warning">
+          Для записи на очную встречу и вопросов о поступлении нужен JavaScript.
+          Электронное обращение можно отправить и без него — выберите тип «Обращение».
+        </p>
+      </noscript>
+
+      <div class="notice notice--success" id="sent-banner" hidden role="status"></div>
+      <div class="notice notice--warning" id="demo-banner" hidden role="status">
+        <strong>Демонстрационная версия.</strong>
+        Сервер приёма обращений не подключён, поэтому отправка не сохранится.
+        Полная версия формы работает на сервере школы.
+      </div>
+      <div class="notice notice--error" id="form-error" hidden role="alert"></div>
+      <div class="error-summary" id="error-summary" tabindex="-1" hidden role="alert" aria-labelledby="error-summary-title">
+        <h3 class="error-summary__title" id="error-summary-title">Проверьте заполнение формы</h3>
+        <ul class="error-summary__list" id="error-summary-list"></ul>
+      </div>
+
+      <form id="appeal-form" class="form" action="/api/applications" method="post" novalidate>
+        <div class="hp-field" aria-hidden="true">
+          <label for="website">Не заполняйте это поле</label>
+          <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+        </div>
+
+        <fieldset class="fieldset">
+          <legend class="fieldset__legend">Тип обращения <span class="req">*</span></legend>
+          <div class="choice-grid" role="radiogroup" aria-describedby="type-help">
+            <label class="choice">
+              <input type="radio" name="type" value="appeal" checked>
+              <span class="choice__body">
+                <span class="choice__title">Обращение</span>
+                <span class="choice__hint">Вопрос, предложение или жалоба по работе школы</span>
+              </span>
+            </label>
+            <label class="choice">
+              <input type="radio" name="type" value="meeting">
+              <span class="choice__body">
+                <span class="choice__title">Запись на очную встречу</span>
+                <span class="choice__hint">Для законных представителей зачисленных учеников</span>
+              </span>
+            </label>
+            <label class="choice">
+              <input type="radio" name="type" value="admission">
+              <span class="choice__body">
+                <span class="choice__title">Вопрос о поступлении</span>
+                <span class="choice__hint">Приём в 1–11 классы, документы, вакантные места</span>
+              </span>
+            </label>
+          </div>
+          <p class="help" id="type-help">От выбранного типа зависит набор полей ниже.</p>
+        </fieldset>
+
+        <fieldset class="fieldset">
+          <legend class="fieldset__legend">Контактные данные</legend>
+
+          <div class="field">
+            <label class="label" for="fullName">ФИО заявителя <span class="req">*</span></label>
+            <input class="input" id="fullName" name="fullName" type="text" autocomplete="name"
+                   placeholder="Иванова Мария Петровна" maxlength="120"
+                   aria-describedby="fullName-error">
+            <p class="field__error" id="fullName-error" hidden></p>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label class="label" for="phone">Телефон <span class="req">*</span></label>
+              <input class="input" id="phone" name="phone" type="tel" inputmode="tel"
+                     autocomplete="tel" placeholder="+7 (999) 123-45-67"
+                     aria-describedby="phone-error">
+              <p class="field__error" id="phone-error" hidden></p>
+            </div>
+
+            <div class="field">
+              <label class="label" for="email">E-mail <span class="req">*</span></label>
+              <input class="input" id="email" name="email" type="email" autocomplete="email"
+                     placeholder="name@example.ru" maxlength="254" aria-describedby="email-error">
+              <p class="field__error" id="email-error" hidden></p>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label" for="corpus">Корпус школы <span class="req">*</span></label>
+            <select class="input select" id="corpus" name="corpus" aria-describedby="corpus-error corpus-help">
+              <option value="">Выберите корпус</option>
+              <option value="verhnie-pechery">Корпус «Верхние Печеры» — ул. Нижне-Печерская, 4А</option>
+              <option value="avtozavod">Корпус «Автозавод» — Южный бульвар, 23</option>
+              <option value="sormovo">Корпус «Сормово» — пр-т Кораблестроителей, 52к1</option>
+            </select>
+            <p class="help" id="corpus-help">Обращение поступит в приёмную выбранного корпуса.</p>
+            <p class="field__error" id="corpus-error" hidden></p>
+          </div>
+        </fieldset>
+
+        <fieldset class="fieldset section-fields" data-section="appeal">
+          <legend class="fieldset__legend">Суть обращения</legend>
+
+          <div class="field">
+            <label class="label" for="subject">Тема обращения <span class="req">*</span></label>
+            <input class="input" id="subject" name="subject" type="text" maxlength="120"
+                   placeholder="Например: организация питания в корпусе" aria-describedby="subject-error">
+            <p class="field__error" id="subject-error" hidden></p>
+          </div>
+
+          <div class="field">
+            <label class="label" for="message">Текст обращения <span class="req">*</span></label>
+            <textarea class="input textarea" id="message" name="message" rows="6" maxlength="4000"
+                      placeholder="Опишите ситуацию: что произошло, когда и где. Чем подробнее описание, тем быстрее мы разберёмся."
+                      aria-describedby="message-error message-counter"></textarea>
+            <div class="field__meta">
+              <p class="field__error" id="message-error" hidden></p>
+              <p class="counter" id="message-counter" aria-live="polite">0 / 4000</p>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="fieldset section-fields" data-section="meeting" hidden>
+          <legend class="fieldset__legend">Данные для записи на встречу</legend>
+
+          <div class="field-row">
+            <div class="field">
+              <label class="label" for="childClass">Класс ребёнка <span class="req">*</span></label>
+              <select class="input select" id="childClass" name="childClass" aria-describedby="childClass-error">
+                <option value="">Выберите класс</option>
+                <option value="preschool">Дошкольник</option>
+                <option value="1">1 класс</option>
+                <option value="2">2 класс</option>
+                <option value="3">3 класс</option>
+                <option value="4">4 класс</option>
+                <option value="5">5 класс</option>
+                <option value="6">6 класс</option>
+                <option value="7">7 класс</option>
+                <option value="8">8 класс</option>
+                <option value="9">9 класс</option>
+                <option value="10">10 класс</option>
+                <option value="11">11 класс</option>
+              </select>
+              <p class="field__error" id="childClass-error" hidden></p>
+            </div>
+
+            <div class="field">
+              <label class="label" for="meetingDate">Дата встречи <span class="req">*</span></label>
+              <input class="input" id="meetingDate" name="meetingDate" type="date"
+                     aria-describedby="meetingDate-error meetingDate-help">
+              <p class="help" id="meetingDate-help">Только будние дни, не более 60 дней вперёд.</p>
+              <p class="field__error" id="meetingDate-error" hidden></p>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label" for="meetingTime">Удобное время <span class="req">*</span></label>
+            <select class="input select" id="meetingTime" name="meetingTime" aria-describedby="meetingTime-error">
+              <option value="">Выберите время</option>
+              <option value="09:00">09:00</option>
+              <option value="10:00">10:00</option>
+              <option value="11:00">11:00</option>
+              <option value="12:00">12:00</option>
+              <option value="13:00">13:00</option>
+              <option value="14:00">14:00</option>
+              <option value="15:00">15:00</option>
+              <option value="16:00">16:00</option>
+              <option value="17:00">17:00</option>
+            </select>
+            <p class="field__error" id="meetingTime-error" hidden></p>
+          </div>
+
+          <div class="field">
+            <label class="label" for="topic">Вопрос для встречи <span class="req">*</span></label>
+            <textarea class="input textarea" id="topic" name="topic" rows="4" maxlength="500"
+                      placeholder="С кем и по какому вопросу вы хотели бы встретиться"
+                      aria-describedby="topic-error"></textarea>
+            <p class="field__error" id="topic-error" hidden></p>
+          </div>
+
+          <p class="notice notice--info">
+            Запись доступна только законным представителям учеников, зачисленных в АНОО «Школа 800».
+            Точное время подтвердит специалист приёмной по указанному телефону.
+          </p>
+        </fieldset>
+
+        <fieldset class="fieldset section-fields" data-section="admission" hidden>
+          <legend class="fieldset__legend">Данные ребёнка</legend>
+
+          <div class="field">
+            <label class="label" for="childName">Фамилия и имя ребёнка <span class="req">*</span></label>
+            <input class="input" id="childName" name="childName" type="text" maxlength="120"
+                   placeholder="Иванов Пётр" aria-describedby="childName-error">
+            <p class="field__error" id="childName-error" hidden></p>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label class="label" for="childBirthDate">Дата рождения ребёнка <span class="req">*</span></label>
+              <input class="input" id="childBirthDate" name="childBirthDate" type="date"
+                     aria-describedby="childBirthDate-error">
+              <p class="field__error" id="childBirthDate-error" hidden></p>
+            </div>
+
+            <div class="field">
+              <label class="label" for="targetClass">Класс поступления <span class="req">*</span></label>
+              <select class="input select" id="targetClass" name="targetClass" aria-describedby="targetClass-error">
+                <option value="">Выберите класс</option>
+                <option value="1">1 класс</option>
+                <option value="2">2 класс</option>
+                <option value="3">3 класс</option>
+                <option value="4">4 класс</option>
+                <option value="5">5 класс</option>
+                <option value="6">6 класс</option>
+                <option value="7">7 класс</option>
+                <option value="8">8 класс</option>
+                <option value="9">9 класс</option>
+                <option value="10">10 класс</option>
+                <option value="11">11 класс</option>
+              </select>
+              <p class="field__error" id="targetClass-error" hidden></p>
+            </div>
+          </div>
+
+          <p class="notice notice--info">
+            Приёмная кампания в 1 классы на 2026–2027 учебный год стартует 2 марта 2026 года.
+            Подробности — в разделе <a href="https://shkola800.ru/postupayuschim/">«Поступающим»</a>.
+          </p>
+        </fieldset>
+
+        <fieldset class="fieldset">
+          <legend class="fieldset__legend">Вложения</legend>
+
+          <div class="upload">
+            <input class="visually-hidden" id="files" name="files" type="file" multiple
+                   accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.txt"
+                   aria-describedby="files-help files-error">
+            <label class="upload__zone" for="files" id="upload-zone">
+              <span class="upload__icon" aria-hidden="true">📎</span>
+              <span class="upload__title">Перетащите файлы сюда или нажмите, чтобы выбрать</span>
+              <span class="upload__hint">PDF, JPG, PNG, DOC, DOCX, TXT · до 5 файлов, не более 5 МБ всего</span>
+            </label>
+            <ul class="upload__list" id="files-list" aria-live="polite"></ul>
+            <p class="field__error" id="files-error" hidden></p>
+            <p class="help" id="files-help">Вложения необязательны. Не прикладывайте документы с чужими персональными данными.</p>
+          </div>
+        </fieldset>
+
+        <div class="field field--consent">
+          <label class="consent">
+            <input type="checkbox" id="consent" name="consent" aria-describedby="consent-error">
+            <span>
+              Я принимаю условия
+              <a href="https://shkola800.ru/politika-v-otnoshenii-obrabotki-personalnyix-dannyix" target="_blank" rel="noopener noreferrer">политики обработки персональных данных</a>
+              и даю согласие на обработку моих персональных данных <span class="req">*</span>
+            </span>
+          </label>
+          <p class="field__error" id="consent-error" hidden></p>
+        </div>
+
+        <div class="form__actions">
+          <button class="btn btn--primary" type="submit" id="submit-btn">
+            <span class="btn__label">Отправить обращение</span>
+            <span class="btn__spinner" aria-hidden="true" hidden></span>
+          </button>
+          <button class="btn btn--ghost" type="reset" id="reset-btn">Очистить форму</button>
+          <p class="form__note" id="draft-note" hidden>Черновик сохраняется в этом браузере автоматически.</p>
+        </div>
+      </form>
+
+      <div class="success" id="success-panel" hidden>
+        <div class="success__icon" aria-hidden="true">✓</div>
+        <h3 class="success__title">Обращение отправлено</h3>
+        <p class="success__text">
+          Номер вашего обращения: <strong id="success-id">—</strong>.
+          Ответ придёт на указанный e-mail в срок до 30 дней. По вопросам записи на встречу
+          специалист приёмной свяжется в течение 3 рабочих дней.
+        </p>
+        <p class="success__text success__text--muted">Сохраните номер — по нему можно уточнить статус обращения.</p>
+        <button class="btn btn--ghost" type="button" id="new-appeal">Отправить ещё одно обращение</button>
+      </div>
+    </section>
+
+    <aside class="sidebar" aria-label="Дополнительная информация">
+      <section class="card card--compact">
+        <h2 class="card__title card__title--small">Контакты корпусов</h2>
+        <ul class="contacts">
+          <li class="contacts__item">
+            <p class="contacts__name">Верхние Печеры</p>
+            <p class="contacts__line">ул. Нижне-Печерская, 4А</p>
+            <a class="contacts__line" href="tel:+79159418542">8 (915) 941-85-42</a>
+            <a class="contacts__line" href="mailto:vp@shkola800.ru">vp@shkola800.ru</a>
+          </li>
+          <li class="contacts__item">
+            <p class="contacts__name">Автозавод</p>
+            <p class="contacts__line">Южный бульвар, 23</p>
+            <a class="contacts__line" href="tel:+78312024187">8 (831) 202-41-87, доб. 1038</a>
+            <a class="contacts__line" href="mailto:avtozavod@shkola800.ru">avtozavod@shkola800.ru</a>
+          </li>
+          <li class="contacts__item">
+            <p class="contacts__name">Сормово</p>
+            <p class="contacts__line">пр-т Кораблестроителей, 52к1</p>
+            <a class="contacts__line" href="tel:+79159414450">8 (915) 941-44-50</a>
+            <a class="contacts__line" href="mailto:sormovo@shkola800.ru">sormovo@shkola800.ru</a>
+          </li>
+        </ul>
+      </section>
+
+      <section class="card card--compact">
+        <h2 class="card__title card__title--small">Как быстрее получить ответ</h2>
+        <ol class="tips">
+          <li>Укажите корпус и класс ребёнка — обращение сразу попадёт нужному специалисту.</li>
+          <li>Опишите ситуацию по существу: дата, место, участники.</li>
+          <li>Приложите подтверждающие документы, если они есть.</li>
+          <li>Проверьте e-mail — ответ придёт на него.</li>
+        </ol>
+      </section>
+
+      <section class="card card--compact card--accent">
+        <h2 class="card__title card__title--small">Нужна помощь?</h2>
+        <p class="sidebar__text">
+          Если форма не отправляется, позвоните в приёмную корпуса или напишите на
+          <a href="mailto:anoo_shkola800_nn@mail.52gov.ru">anoo_shkola800_nn@mail.52gov.ru</a>.
+        </p>
+        <p class="sidebar__text">
+          Вопросы приёма в 1 класс: <a href="mailto:priem@shkola800.ru">priem@shkola800.ru</a>.
+        </p>
+      </section>
+    </aside>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer__inner">
+    <p>© 2026 АНОО «Школа 800», Нижний Новгород</p>
+    <nav class="footer__links" aria-label="Ссылки в подвале">
+      <a href="https://shkola800.ru/politika-v-otnoshenii-obrabotki-personalnyix-dannyix" target="_blank" rel="noopener noreferrer">Политика обработки персональных данных</a>
+      <a href="https://shkola800.ru/kontakty/">Контакты</a>
+      <a href="https://shkola800.ru/">shkola800.ru</a>
+    </nav>
+  </div>
+</footer>
+</body>
+</html>

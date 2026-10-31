@@ -56,9 +56,55 @@ npm test               # тесты валидации, API и целостно�
 PORT=8080 HOST=127.0.0.1 npm start
 ```
 
-Для статического хостинга (например, GitHub Pages) выполните `npm run build` — он скопирует
-общий модуль валидации в `public/shared/`. Учтите, что форма в этом случае будет только
-проверять данные, а `POST /api/applications` потребуется поднимать на сервере отдельно.
+Для публикации статической копии выполните `npm run build`: он соберёт готовый сайт в `docs/`
+(эту папку умеет публиковать GitHub Pages) и скопирует общий модуль валидации в `public/shared/`.
+На статическом хостинге форма проверяет данные, но показывает баннер «Демонстрационная версия»,
+потому что `POST /api/applications` обслуживает только сервер.
+
+## Как запустить через GitHub
+
+### 1. Демо на GitHub Pages — включить в один клик
+
+Статика уже собрана в `docs/`, поэтому достаточно указать её как источник Pages:
+
+1. Откройте <https://github.com/angel251005busines-arch/oioi/settings/pages>.
+2. **Source: Deploy from a branch** → **Branch: `cline/wd0578zj`**, **Folder: `/docs`** → **Save**.
+3. Через минуту сайт будет здесь: <https://angel251005busines-arch.github.io/oioi/>
+
+После изменений в коде выполните `npm run build`, закоммитьте `docs/` — Pages пересоберёт сайт сам.
+
+**Вариант через GitHub Actions** (если хотите деплой на каждый пуш):
+в репозитории откройте **Add file → Create new file**, назовите `.github/workflows/pages.yml`
+и вставьте содержимое файла [`deploy/pages.workflow.yml`](deploy/pages.workflow.yml) → **Commit**.
+Дальше каждый пуш прогоняет тесты и публикует сайт сам; первый запуск можно стартовать вручную:
+**Actions → Deploy to GitHub Pages → Run workflow**.
+
+> На Pages работает только фронтенд: форма валидирует данные, но показывает баннер
+> «Демонстрационная версия», потому что сервера `POST /api/applications` там нет.
+
+### 2. Склонировать и запустить локально (полная версия с сохранением заявок)
+
+Нужен только Node.js 20+:
+
+```bash
+git clone https://github.com/angel251005busines-arch/oioi.git
+cd oioi
+npm start        # откройте http://localhost:3000
+```
+
+Заявки появятся в `data/applications.jsonl`, вложения — в `data/uploads/`.
+Без установки Node можно скачать архив: **Code → Download ZIP**.
+
+### 3. Запустить в облаке без локальной установки (GitHub Codespaces)
+
+На странице репозитория: **Code → Codespaces → Create codespace on cline/wd0578zj**,
+затем в терминале `npm start` — Codespace сам откроет порт 3000 в браузере.
+
+### 4. Настоящий приём заявок в интернете
+
+Разместите `npm start` на любом хостинге с Node.js (VPS, Render, Railway, Timeweb Cloud)
+за HTTPS — фронтенд и API будут на одном домене, и форма начнёт сохранять обращения.
+GitHub Pages для этого не подходит: он раздаёт только статические файлы.
 
 ## Структура
 

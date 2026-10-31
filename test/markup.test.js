@@ -39,16 +39,24 @@ test('все aria-describedby и aria-labelledby ссылаются на сущ�
 });
 
 test('локальные ресурсы страницы существуют', async () => {
-  const localLinks = [...html.matchAll(/(?:src|href)="(\/[^"]+)"/g)]
+  const localLinks = [...html.matchAll(/(?:src|href)="([^"/][^"]*|\.\/[^"]*)"/g)]
     .map((match) => match[1])
-    .filter((href) => !href.startsWith('//'));
+    .filter((href) => !href.startsWith('http') && !href.startsWith('mailto:') && !href.startsWith('tel:') && !href.startsWith('#'));
 
   assert.ok(localLinks.length >= 3);
   for (const link of localLinks) {
-    const filePath = path.join(ROOT, 'public', link);
+    const clean = link.split('#')[0].split('?')[0];
+    const filePath = path.join(ROOT, 'public', clean);
     const info = await stat(filePath).catch(() => null);
     assert.ok(info?.isFile(), `не найден файл ${link}`);
   }
+});
+
+test('все пути относительные — страница работает в подкаталоге (GitHub Pages)', async () => {
+  const absolute = [...html.matchAll(/(?:src|href)="(\/[^"]*)"/g)].map((match) => match[1]);
+  assert.deepEqual(absolute, [], 'найдены абсолютные пути, ломающиеся в подкаталоге');
+  assert.match(appJs, /from '\.\.\/shared\/validation\.mjs'/);
+  assert.match(appJs, /fetch\('api\/applications'/);
 });
 
 test('форма отправляется на API и не использует встроенный JS/CSS (CSP)', () => {
@@ -91,6 +99,12 @@ test('app.js не ссылается на отсутствующие в разм
   for (const id of new Set(referenced)) {
     assert.ok(ids.includes(id), `app.js ищет отсутствующий id="${id}"`);
   }
+});
+
+test('в app.js обработка статического хостинга и демо-режим подключены', () => {
+  assert.match(html, /id="demo-banner"/);
+  assert.match(appJs, /fetch\('api\/health'/);
+  assert.match(appJs, /Демонстрационная версия|демонстрационная версия/);
 });
 
 test('CSS синтаксически сбалансирован и не содержит незакрытых блоков', () => {
